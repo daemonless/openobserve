@@ -36,13 +36,16 @@ FROM ghcr.io/daemonless/base:${BASE_VERSION} AS builder
 ENV CARGO_TERM_COLOR=never \
     RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
-    PATH=/usr/local/cargo/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin
+    PATH=/usr/local/cargo/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin \
+    CARGO_PROFILE_RELEASE_DEBUG=0 \
+    CARGO_INCREMENTAL=0
 
 COPY --from=web /tmp/openobserve.tar.gz /tmp/openobserve.tar.gz
 
 # Fetch and extract source tarball
 RUN mkdir -m 0755 /openobserve && \
-    tar -C /openobserve -xzf /tmp/openobserve.tar.gz --strip-components 1
+    tar -C /openobserve -xzf /tmp/openobserve.tar.gz --strip-components 1 && \
+    rm -f /tmp/openobserve.tar.gz
 
 # Install required tools
 RUN pkg update && pkg install -y FreeBSD-set-devel rustup-init git cmake gmake pkgconf protobuf openssl ca_root_nss \
@@ -95,6 +98,7 @@ CMD_EOF
 
 # protoc >= 3.15 is required by the build [1]
 RUN <<CMD_EOF
+set -eu
 RUSTFLAGS="-C target-feature=+aes,+sse2" cargo build --release --bin openobserve
 rm -fr target/debug target/release/build ~/.cargo/registry/src ~/.cargo/git/checkouts
 CMD_EOF
