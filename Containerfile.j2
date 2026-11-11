@@ -102,7 +102,7 @@ CMD_EOF
 # protoc >= 3.15 is required by the build [1]
 RUN <<CMD_EOF
 set -eu
-RUSTFLAGS="-C target-feature=+aes,+sse2 -Zshare-generics=y -Zno-parallel-backend" \
+RUSTFLAGS="-C target-feature=+aes,+sse2 -Zshare-generics=y --jobs-backend=1" \
   cargo build --release --bin openobserve -j1
 rm -fr target/debug target/release/build ~/.cargo/registry/src ~/.cargo/git/checkouts
 CMD_EOF
