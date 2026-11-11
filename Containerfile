@@ -45,7 +45,7 @@ ENV CARGO_TERM_COLOR=never \
     PATH=/usr/local/cargo/bin:/usr/local/bin:/usr/bin:/usr/sbin:/bin:/sbin \
     CARGO_PROFILE_RELEASE_DEBUG=0 \
     CARGO_PROFILE_RELEASE_LTO=false \
-    CARGO_PROFILE_RELEASE_CODEGEN_UNITS=256 \
+    CARGO_PROFILE_RELEASE_CODEGEN_UNITS=32 \
     CARGO_INCREMENTAL=0 \
     CARGO_BUILD_JOBS=1
 
@@ -108,7 +108,7 @@ CMD_EOF
 # protoc >= 3.15 is required by the build [1]
 RUN <<CMD_EOF
 set -eu
-RUSTFLAGS="-C target-feature=+aes,+sse2 -Zshare-generics=y" \
+RUSTFLAGS="-C target-feature=+aes,+sse2 -Zshare-generics=y -Zno-parallel-backend" \
   cargo build --release --bin openobserve -j1
 rm -fr target/debug target/release/build ~/.cargo/registry/src ~/.cargo/git/checkouts
 CMD_EOF
