@@ -8,9 +8,15 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+  actions: read
+
 jobs:
   build:
-    uses: daemonless/dbuild/.github/workflows/daemonless-build.yaml@main
+    uses: daemonless/dbuild/.github/workflows/daemonless-build.yaml@feat/vm-swap-from-free-disk
     with:
       image_name: openobserve
     secrets: inherit
